@@ -2,21 +2,6 @@ import base64
 from collections import Counter
 
 
-def load_bpe(bpe_path: str) -> dict[bytes, int]:
-    ranks: dict[bytes, int] = {}
-    with open(bpe_path, "rb") as f:
-        for line in f.readlines():
-            token_pair, rank = line.split()
-            ranks[base64.b64decode(token_pair)] = int(rank)
-    return ranks
-
-
-def dump_bpe(ranks: dict[bytes, int]):
-    with open("merges.bpe", "wb") as f:
-        for pair, rank in ranks.items():
-            f.writelines(base64.b64encode(pair) + b" " + str(rank).encode("utf-8"))
-
-
 class BasicTokenizer:
     def __init__(self, ranks: dict[bytes, int] = {}):
         self.ranks = ranks

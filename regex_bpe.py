@@ -2,14 +2,12 @@ import base64
 import regex as re
 import itertools as it
 from collections import Counter
-from bpe import BasicTokenizer, load_bpe
-
-GPT4_SPLIT_PATTERN = r"""'(?i:[sdmt]|ll|ve|re)|[^\r\n\p{L}\p{N}]?+\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]++[\r\n]*|\s*[\r\n]|\s+(?!\S)|\s+"""
+from utils import GPT4_SPLIT_PATTERN
 
 
-class RegexTokenizer(BasicTokenizer):
+class RegexTokenizer:
     def __init__(self, ranks: dict[bytes, int] = {}, pat_str: str = GPT4_SPLIT_PATTERN):
-        super().__init__(ranks)
+        self.ranks = ranks
         self.pat = re.compile(pat_str)
 
     def merge(
