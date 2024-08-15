@@ -29,7 +29,7 @@ if not os.path.exists("./regex-merges.bpe"):
 
 regex_ranks = load_bpe("./regex-merges.bpe")
 enc = RegexTokenizer(regex_ranks)
-inp = "Listen to me, mister. You're my knight in shining armor. Don't you forget it. You're going to get back on that horse, and I'm going to be right behind you, holding on tight, and away we're gonna , go, go!"
+inp = "Listen to me, mister. You're my knight in shining armor.<|endoftext|> Don't you forget it. You're going to get back on that horse, and I'm going to be right behind you, holding on tight, and away we're gonna , go, go!"
 ids = enc.encode(inp)
 print(ids)
 out = enc.decode(ids)

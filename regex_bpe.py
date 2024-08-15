@@ -2,7 +2,7 @@ import base64
 import regex as re
 import itertools as it
 from collections import Counter
-from utils import GPT4_SPLIT_PATTERN
+from utils import GPT4_SPECIAL_TOKENS, GPT4_SPLIT_PATTERN
 
 
 class RegexTokenizer:
@@ -79,10 +79,22 @@ class RegexTokenizer:
                 words = self.merge(words, top_pair, top_pair_token)
 
     def encode(self, text: str) -> list[list[bytes]]:
-        words = [
-            [bytes([x]) for x in word.encode("utf-8")]
-            for word in self.pat.findall(text)
-        ]
+        special_token_pat = (
+            "(" + "|".join([re.escape(x) for x in GPT4_SPECIAL_TOKENS]) + ")"
+        )
+        words = re.split(special_token_pat, text)
+        new_words: list[list[bytes]] = []
+        for word in words:
+            if word in GPT4_SPECIAL_TOKENS:
+                new_words.append([word.encode("utf-8")])
+            else:
+                new_words.extend(
+                    [
+                        [bytes([x]) for x in word.encode("utf-8")]
+                        for word in self.pat.findall(word)
+                    ]
+                )
+        words = new_words
 
         # compress
         new_words: list[list[bytes]] = []
